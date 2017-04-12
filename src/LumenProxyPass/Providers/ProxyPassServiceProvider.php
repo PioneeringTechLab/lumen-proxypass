@@ -4,8 +4,6 @@ namespace CSUNMetaLab\LumenProxyPass\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use URL;
-
 class ProxyPassServiceProvider extends ServiceProvider
 {
 	public function register() {
@@ -71,7 +69,7 @@ class ProxyPassServiceProvider extends ServiceProvider
 		// override the public schema if an override exists
         $publicSchema = config("proxypass.public_schema_override");
         if(!empty($publicSchema)) {
-            URL::forceSchema($publicSchema);
+            $_SERVER['REQUEST_SCHEME'] = $publicSchema;
         }
 
         // override the public root URL if an override exists

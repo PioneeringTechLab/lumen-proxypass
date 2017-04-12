@@ -29,9 +29,10 @@ PUBLIC_SCHEMA_OVERRIDE=
 PUBLIC_URL_OVERRIDE=
 ```
 
-Next, register the service provider in `bootstrap/app.php` as follows:
+Next, register the service provider and the configuration file in `bootstrap/app.php` as follows:
 
 ```
+$app->configure('proxypass');
 $app->register(CSUNMetaLab\LumenProxyPass\Providers\ProxyPassServiceProvider::class);
 ```
 
