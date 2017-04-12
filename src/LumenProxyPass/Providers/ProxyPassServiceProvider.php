@@ -4,13 +4,12 @@ namespace CSUNMetaLab\LumenProxyPass\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use Config;
 use URL;
 
 class ProxyPassServiceProvider extends ServiceProvider
 {
 	public function register() {
-		if(Config::get('proxypass.proxy_active')) {
+		if(config('proxypass.proxy_active')) {
             // if we already have a URL forced via the .env file, don't attempt
             // to configure the root URL from the proxy headers
             $url_override = config('proxypass.public_url_override');
@@ -24,15 +23,9 @@ class ProxyPassServiceProvider extends ServiceProvider
 		}
 	}
 
-	public function boot() {
-		$this->publishes([
-        	__DIR__.'/../config/proxypass.php' => config_path('proxypass.php'),
-    	]);
-	}
-
 	private function configureProxiedURLs() {
         $urlOverride = "";
-        $proxyHeader = Config::get(
+        $proxyHeader = config(
         	'proxypass.proxy_path_header', 'HTTP_X_FORWARDED_PATH');
      
         // check the explicit path header (default is 'HTTP_X_FORWARDED_PATH') for rewrite purposes; this
@@ -57,19 +50,19 @@ class ProxyPassServiceProvider extends ServiceProvider
             }
         }
         if(!empty($schemaOverride)) {
-            Config::set('proxypass.public_schema_override', $schemaOverride);
+            config(['proxypass.public_schema_override' => $schemaOverride]);
         }
      
         // if we now have a URL override, set it
         if(!empty($urlOverride)) {
             if($schemaOverride == "https") {
                 // override the root URL to include HTTPS as well
-                Config::set('proxypass.public_url_override',
-                    str_replace('http:', 'https:', $urlOverride));
+                config(['proxypass.public_url_override' =>
+                    str_replace('http:', 'https:', $urlOverride)]);
             }
             else
             {
-                Config::set('proxypass.public_url_override', $urlOverride);
+                config(['proxypass.public_url_override' => $urlOverride]);
             }
         }
 	}
