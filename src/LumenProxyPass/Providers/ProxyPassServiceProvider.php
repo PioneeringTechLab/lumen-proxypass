@@ -37,7 +37,12 @@ class ProxyPassServiceProvider extends ServiceProvider
         // should there also be a schema override for HTTPS?
         $schemaOverride = "";
         if(!empty($_SERVER['SERVER_PORT'])) {
+            // check the server port first
             $schemaOverride = ($_SERVER['SERVER_PORT'] == '443' ? "https" : "");
+        }
+        if(!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+            // now check the standard LB request header
+            $schemaOverride = ($_SERVER['HTTP_X_FORWARDED_PROTO'] == "https" ? "https" : "");
         }
         if(!empty($urlOverride)) {
             // does the schema of the URL override begin with https?
