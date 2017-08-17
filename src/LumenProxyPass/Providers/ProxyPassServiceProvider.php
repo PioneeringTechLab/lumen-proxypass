@@ -74,7 +74,13 @@ class ProxyPassServiceProvider extends ServiceProvider
 		// override the public schema if an override exists
         $publicSchema = config("proxypass.public_schema_override");
         if(!empty($publicSchema)) {
-            $_SERVER['REQUEST_SCHEME'] = $publicSchema;
+            if($publicSchema == "https") {
+                // the forceSchema() method in the URL facade essentially does nothing
+                // since the decision on secure protocol is made in Symfony's Request
+                // instance, not Lumen's. We have to set HTTPS to a non-"off" value
+                // explicitly.
+                $_SERVER['HTTPS'] = "on";
+            }
         }
 
         // override the public root URL if an override exists
